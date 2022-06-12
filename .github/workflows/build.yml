@@ -1,0 +1,103 @@
+name: Build
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'Job to run'
+        required: true
+        default: 'package'
+
+env:
+  SPECTRE_VERSION: ${{ github.ref_name }}
+
+jobs:
+  build-launcher:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout launcher repository
+        uses: actions/checkout@v2
+        with:
+          repository: R1Spectre/SpectreLauncher
+          ref: ${{ env.SPECTRE_VERSION }}
+          path: spectre-launcher
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.1
+      - name: Build
+        working-directory: spectre-launcher
+        run: |
+          msbuild /p:Configuration=Release SpectreHook.sln
+      - name: Upload launcher build as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: spectre-launcher
+          path: |
+            spectre-launcher/x64/Release/SpectreLauncher.exe
+      - name: Upload debug build artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: launcher-debug-files
+          path: |
+            spectre-launcher/x64/Release/*.pdb
+
+  build-hook:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout launcher repository
+        uses: actions/checkout@v2
+        with:
+          repository: R1Spectre/SpectreHook
+          ref: ${{ env.SPECTRE_VERSION }}
+          path: spectre-hook
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.1
+      - name: Build
+        working-directory: spectre-hook
+        run: |
+          msbuild /p:Configuration=Release hook.sln
+      - name: Upload hook build as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: spectre-hook
+          path: |
+            spectre-hook/x64/Release/Spectre.dll
+      - name: Upload debug build artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: hook-debug-files
+          path: |
+            spectre-hook/x64/Release/*.pdb
+
+  package:
+    needs:
+      - build-launcher
+      - build-hook
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Download compiled launcher
+        uses: actions/download-artifact@v2
+        with:
+          name: spectre-launcher
+          path: spectre-launcher
+      - name: Checkout release files
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ env.SPECTRE_VERSION }}
+          path: spectre
+      - name: Make folder structure
+        run: |
+          mv -v spectre/release/* spectre/.
+          mkdir -p spectre/R1Spectre/mods
+
+          mv -v spectre-launcher/* spectre
+      - name: Cleanup root repository files
+        working-directory: spectre
+        run: |
+          rm -rf .git .github .gitignore *.md LICENSE
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: Spectre.release.${{ env.SPECTRE_VERSION }}
+          path: spectre
