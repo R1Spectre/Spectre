@@ -110,6 +110,11 @@ jobs:
         with:
           name: spectre-hook
           path: spectre-hook
+      - name: Download mods
+        uses: actions/download-artifact@v2
+        with:
+          name: spectre-mods
+          path: spectre-mods
       - name: Checkout release files
         uses: actions/checkout@v2
         with:
