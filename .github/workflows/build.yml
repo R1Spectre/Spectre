@@ -21,7 +21,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: R1Spectre/SpectreLauncher
-          token: ${{ secrets.GH_PAT }}
           ref: ${{ env.SPECTRE_VERSION }}
           path: spectre-launcher
       - name: Setup MSBuild
@@ -50,7 +49,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: R1Spectre/SpectreHook
-          token: ${{ secrets.GH_PAT }}
           ref: ${{ env.SPECTRE_VERSION }}
           path: spectre-hook
       - name: Setup MSBuild
