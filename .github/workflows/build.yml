@@ -91,6 +91,7 @@ jobs:
           mkdir -p spectre/R1Spectre/mods
 
           mv -v spectre-launcher/* spectre
+          mv -v spectre-hook/* spectre
       - name: Cleanup root repository files
         working-directory: spectre
         run: |
