@@ -88,7 +88,6 @@ jobs:
           path: spectre
       - name: Make folder structure
         run: |
-          mv -v spectre/release/* spectre/.
           mkdir -p spectre/R1Spectre/mods
 
           mv -v spectre-launcher/* spectre
