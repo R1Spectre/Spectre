@@ -70,10 +70,28 @@ jobs:
           path: |
             spectre-hook/x64/Release/*.pdb
 
+  get-mods:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout core mods
+        uses: actions/checkout@v2
+        with:
+          repository: R1Spectre/SpectreMods
+          ref: ${{ env.SPECTRE_VERSION }}
+          path: spectre-mods
+      - name: Update mod version info
+        run: |
+          export MOD_VERSION=$(echo $SPECTRE_VERSION | tr -d 'v')
+          cat <<< $(jq ".Version = \"${MOD_VERSION}\"" spectre-mods/Spectre.Core/mod.json) > spectre-mods/Spectre.Core/mod.json
+      - name: Clean up files
+        run: |
+          rm -rf spectre-mods/.git spectre-mods/.github spectre-mods/.gitignore spectre-mods/*.md spectre-mods/LICENSE
+
   package:
     needs:
       - build-launcher
       - build-hook
+      - get-mods
     runs-on: ubuntu-20.04
     steps:
       - name: Download compiled launcher
@@ -97,6 +115,8 @@ jobs:
 
           mv -v spectre-launcher/* spectre
           mv -v spectre-hook/* spectre
+          mv -v spectre-mods/* spectre
+          mv -v spectre-mods/* spectre/R1Spectre/mods
       - name: Cleanup root repository files
         working-directory: spectre
         run: |
