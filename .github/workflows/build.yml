@@ -86,6 +86,12 @@ jobs:
       - name: Clean up files
         run: |
           rm -rf spectre-mods/.git spectre-mods/.github spectre-mods/.gitignore spectre-mods/*.md spectre-mods/LICENSE
+      - name: Upload mods as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: spectre-hook
+          path: |
+            spectre-mods/*
 
   package:
     needs:
