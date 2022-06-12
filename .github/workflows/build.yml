@@ -28,7 +28,7 @@ jobs:
       - name: Build
         working-directory: spectre-launcher
         run: |
-          msbuild /p:Configuration=Release SpectreHook.sln
+          msbuild /p:Configuration=Release launcher.sln
       - name: Upload launcher build as artifact
         uses: actions/upload-artifact@v2
         with:
@@ -56,7 +56,7 @@ jobs:
       - name: Build
         working-directory: spectre-hook
         run: |
-          msbuild /p:Configuration=Release hook.sln
+          msbuild /p:Configuration=Release SpectreHook.sln
       - name: Upload hook build as artifact
         uses: actions/upload-artifact@v2
         with:
