@@ -85,11 +85,11 @@ jobs:
           cat <<< $(jq ".Version = \"${MOD_VERSION}\"" spectre-mods/Spectre.Core/mod.json) > spectre-mods/Spectre.Core/mod.json
       - name: Clean up files
         run: |
-          rm -rf spectre-mods/.git spectre-mods/.github spectre-mods/.gitignore spectre-mods/*.md spectre-mods/LICENSE
+          rm -rf spectre-mods/.git spectre-mods/.github spectre-mods/.git* spectre-mods/*.md spectre-mods/LICENSE
       - name: Upload mods as artifact
         uses: actions/upload-artifact@v2
         with:
-          name: spectre-hook
+          name: spectre-mods
           path: |
             spectre-mods/*
 
