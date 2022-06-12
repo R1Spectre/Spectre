@@ -126,7 +126,6 @@ jobs:
 
           mv -v spectre-launcher/* spectre
           mv -v spectre-hook/* spectre
-          mv -v spectre-mods/* spectre
           mv -v spectre-mods/* spectre/R1Spectre/mods
       - name: Cleanup root repository files
         working-directory: spectre
