@@ -81,6 +81,11 @@ jobs:
         with:
           name: spectre-launcher
           path: spectre-launcher
+      - name: Download compiled hook
+        uses: actions/download-artifact@v2
+        with:
+          name: spectre-hook
+          path: spectre-hook
       - name: Checkout release files
         uses: actions/checkout@v2
         with:
